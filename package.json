@@ -1,0 +1,22 @@
+{
+  "name": "simpleProxy",
+  "version": "0.0.1",
+  "description": "A simple proxy based on anyproxy for testing server",
+  "homepage": "",
+  "authors": "tc-imba",
+  "license": "MIT",
+  "keywords": [
+    "anyproxy"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "devDependencies": {
+    "anyproxy": "latest",
+    "js-yaml": "latest"
+  },
+  "scripts": {
+
+  }
+}
