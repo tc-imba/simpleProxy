@@ -1,5 +1,10 @@
-由于anyproxy依赖大量库，建议使用淘宝npm进行安装
+# simpleProxy
 
-``$ npm install -g cnpm --registry=https://registry.npm.taobao.org``
+based on anyProxy
 
-``$ cnpm install``
+## Installation
+
+由于anyproxy依赖大量库，建议使用淘宝npm进行安装，先运行`taobao-npm`即可
+
+## Config
+

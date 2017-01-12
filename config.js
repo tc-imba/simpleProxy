@@ -9,16 +9,19 @@ console.log('\nbegin to load configs...\n');
 
 let config;
 try {
-  let doc = fs.readFileSync('./config.yaml', 'utf-8');
-  config = yaml.safeLoad(doc);
+  let doc = fs.readFileSync('./config.json', 'utf-8');
+  //config = yaml.safeLoad(doc);
+  config = JSON.parse(doc);
 } catch (e) {
   console.log(e);
   process.exit(-1);
 }
 
+//config.server.disableWebInterface = true;
 
 if (!config.routes) {
   config.routes = {};
+  console.warn('No routes found!');
 }
 
 for (let key in config.routes) {
@@ -40,23 +43,23 @@ for (let key in config.routes) {
   if (config.routes[key].redirect) {
     // 判断当前配置使用的重定向地址
     let path;
-    if (config.enviornment == 'test') {
-      if (config.routes[key].redirect.test) {
-        path = config.routes[key].redirect.test;
-      } else if (config.routes[key].redirect.prod) {
-        path = config.routes[key].redirect.prod;
+    if (process.env.NODE_ENV === 'production') {
+      if (config.routes[key].redirect.development) {
+        path = config.routes[key].redirect.development;
+      } else if (config.routes[key].redirect.production) {
+        path = config.routes[key].redirect.production;
       } else {
-        console.log('ERROR: no redirect url for route: ' + key);
+        console.error('[ERROR] no redirect url for route: ' + key);
         delete config.routes[key];
         continue;
       }
     } else {
-      if (config.routes[key].redirect.prod) {
-        path = config.routes[key].redirect.prod;
-      } else if (config.routes[key].redirect.test) {
-        path = config.routes[key].redirect.test;
+      if (config.routes[key].redirect.production) {
+        path = config.routes[key].redirect.production;
+      } else if (config.routes[key].redirect.development) {
+        path = config.routes[key].redirect.development;
       } else {
-        console.log('ERROR: no redirect url for route: ' + key);
+        console.error('[ERROR] no redirect url for route: ' + key);
         delete config.routes[key];
         continue;
       }
