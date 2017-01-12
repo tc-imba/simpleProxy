@@ -132,10 +132,11 @@ function redirectOption(option) {
     return option;
   }
 
-  // 计算后置路径
+  // 计算后置路径（开头没有'/'）
   let additionPath = '';
   for (++index; index < paths.length; index++) {
-    additionPath += '/' + paths[index];
+    additionPath += paths[index];
+    if (index < paths.length - 1) additionPath += '/';
   }
 
   route = config.routes[route];
@@ -148,10 +149,18 @@ function redirectOption(option) {
     }
   }
 
+  // 授权（未开发）
+  if (route.auth) {
+
+  }
+
   // 替换http头
   option.hostname = route.redirect.host;
   option.headers.host = route.redirect.host;
-  option.path = route.redirect.path + additionPath;
+  // route.redirect.path 开头结尾都没有'/'
+  option.path = '';
+  if (route.redirect.path) option.path += '/' + route.redirect.path;
+  if (additionPath) option.path += '/' + additionPath;
 
   console.log('redirect to -> ' + option.hostname + option.path);
 

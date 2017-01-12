@@ -30,7 +30,7 @@ routes:
       test: test.passport.17shihui.com
   '/passport':
     redirect:
-      prod: passport.17shihui.com
+      prod: passport.17shihui.com/aaa
       test: test.passport.17shihui.com
     auth: true
   'api/':

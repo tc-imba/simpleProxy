@@ -61,16 +61,17 @@ for (let key in config.routes) {
         continue;
       }
     }
+    while (path[path.length - 1] == '/') {
+      path = path.substr(0, path.length - 1);
+    }
     let pos = path.indexOf('/');
     if (pos > 0) {
-      config.routes[key].redirect = {host: path.substr(0, pos), path: path.substr(pos)};
+      config.routes[key].redirect = {host: path.substr(0, pos), path: path.substr(pos + 1)};
     }
     else {
-      config.routes[key].redirect = {host: path, path: '/'};
+      config.routes[key].redirect = {host: path, path: ''};
     }
-    console.log('Loaded route: ' + key + ' -> [host] ' + config.routes[key].redirect.host
-      + ' | [path] ' + config.routes[key].redirect.path);
-    //console.log(config.routes[key].method);
+    console.log('Loaded route: ' + key + ' -> ' + config.routes[key].redirect.host + '/' + config.routes[key].redirect.path);
   } else {
     console.error('[ERROR] no redirect url for route: ' + key);
     delete config.routes[key];
