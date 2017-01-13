@@ -2,7 +2,7 @@
   "name": "simpleProxy",
   "version": "0.0.1",
   "description": "A simple proxy based on anyproxy for testing server",
-  "homepage": "",
+  "homepage": "https://github.com/tc-imba/simpleProxy",
   "authors": "tc-imba",
   "license": "MIT",
   "keywords": [
@@ -10,10 +10,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/tc-imba/simpleProxy.git"
   },
   "devDependencies": {
-    "anyproxy": "latest",
+    "anyproxy": "latest"
   },
   "scripts": {
     "taobao-npm": "npm config set registry https://registry.npm.taobao.org",
