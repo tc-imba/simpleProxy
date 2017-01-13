@@ -20,7 +20,7 @@ module.exports = {
 
   dealLocalResponse: function (req, reqBody, callback) {
     if (req.method === "OPTIONS") {
-      callback(200, mergeCORSHeader(req.headers), "");
+      callback(200, mergeCORSHeader(req.headers, {}, req.method), "");
     }
   },
 
@@ -87,7 +87,6 @@ function redirectOption(option) {
   return option;
 }
 
-// Copied from github
 function mergeCORSHeader(reqHeader, originHeader, method) {
 
   let targetObj = originHeader || {};
