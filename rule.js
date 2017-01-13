@@ -27,7 +27,7 @@ module.exports = {
   //替换服务器响应的http头
   replaceResponseHeader: function (req, res, header) {
     console.log(req.method + ' ' + req.headers.host);
-    return mergeCORSHeader(req.headers, header);
+    return mergeCORSHeader(req.headers, header, req.method);
   }
 };
 
@@ -88,24 +88,40 @@ function redirectOption(option) {
 }
 
 // Copied from github
-function mergeCORSHeader(reqHeader, originHeader) {
+function mergeCORSHeader(reqHeader, originHeader, method) {
+
   let targetObj = originHeader || {};
 
-  //console.log(reqHeader);
-  //console.log(originHeader);
+  if (reqHeader['origin']) {
 
-  delete targetObj["Access-Control-Allow-Credentials"];
-  delete targetObj["Access-Control-Allow-Origin"];
-  delete targetObj["Access-Control-Allow-Methods"];
-  delete targetObj["Access-Control-Allow-Headers"];
+    if (!config.cors.hasOwnProperty(reqHeader['origin'])) {
+      console.warn('cors access host denied: ' + reqHeader['origin']);
+      return targetObj;
+    }
 
-  targetObj["access-control-allow-credentials"] = "true";
-  //targetObj["access-control-allow-origin"] = reqHeader['origin'] || "-___-||";
-  targetObj["access-control-allow-origin"] = "*";
-  targetObj["access-control-allow-methods"] = "GET, POST, PUT";
-  targetObj["access-control-allow-headers"] = reqHeader['access-control-request-headers'] || "-___-||";
+    let cors_data = config.cors[reqHeader['origin']];
+    if (cors_data.hasOwnProperty('method') && cors_data.method.indexOf(method) < 0) {
+      console.warn('cors access method denied: ' + method + ' from ' + reqHeader['origin']);
+      return targetObj;
+    }
 
-  //console.log(targetObj);
+    console.log('cors access verified: ' + reqHeader['origin']);
+
+    delete targetObj["Access-Control-Allow-Credentials"];
+    delete targetObj["Access-Control-Allow-Origin"];
+    delete targetObj["Access-Control-Allow-Methods"];
+    delete targetObj["Access-Control-Allow-Headers"];
+
+    targetObj["access-control-allow-credentials"] = "true";
+    targetObj["access-control-allow-origin"] = reqHeader['origin'];
+    targetObj["access-control-allow-methods"] = "GET, POST, PUT";
+    targetObj["access-control-allow-headers"] = reqHeader['access-control-request-headers'] || "";
+
+    console.log('access-control-allow-origin <- ' + targetObj["access-control-allow-origin"]);
+    if (reqHeader['access-control-request-headers']) {
+      console.log('access-control-allow-headers <- ' + targetObj['access-control-allow-headers']);
+    }
+  }
 
   return targetObj;
 }

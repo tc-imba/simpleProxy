@@ -81,6 +81,21 @@ for (let key in config.routes) {
   }
 }
 
-console.log();
+for (let key in config.cors) {
+  if (!config.cors.hasOwnProperty(key) || config.cors[key]._processed)continue;
+  let temp = config.cors[key];
+  delete config.cors[key];
+  if (key.substr(0, 7) != 'http://' && key.substr(0, 8) != 'https://') {
+    key = 'http://' + key;
+  }
+  while (key[key.length - 1] == '/') {
+    key = key.substr(0, key.length - 1);
+  }
+  config.cors[key] = temp;
+  config.cors[key]._processed = true;
+  console.log('Loaded cors: ' + key);
+}
+
+
 
 module.exports = config;

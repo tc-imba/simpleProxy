@@ -41,5 +41,12 @@
       "auth": true
     }
   },
-  "cors": null
+  "cors": {
+    "127.0.0.1": {
+      "method": [
+        "GET",
+        "POST"
+      ]
+    }
+  }
 }
