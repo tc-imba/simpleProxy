@@ -1,7 +1,7 @@
 /**
  * Created by liu on 17-1-11.
  */
-const config = require('./config');
+const config = require('./simpleproxy');
 
 module.exports = {
 
@@ -26,7 +26,7 @@ module.exports = {
 
   //替换服务器响应的http头
   replaceResponseHeader: function (req, res, header) {
-    console.log(req.method + ' ' + req.headers.host);
+    if (config.devEnv) console.log(req.method + ' ' + req.headers.host);
     return mergeCORSHeader(req.headers, header, req.method);
   }
 };
@@ -49,6 +49,7 @@ function redirectOption(option) {
 
   // 判断是否需要重定向
   if (route == '/' && !config.routes.hasOwnProperty('/')) {
+    console.log('not matched, pass');
     return option;
   }
 
@@ -64,9 +65,15 @@ function redirectOption(option) {
   // 判断http请求方法
   if (route.method) {
     if (route.method.indexOf(option.method) < 0) {
-      console.log(route.method.indexOf(option.method));
+      console.log(route.method + ' method denied for ' + route.redirect.host + '/' + route.redirect.path);
       return option;
     }
+  }
+
+  // 非http/https请求则调用其他函数（未开发）
+  if (route.type && route.type != 'https' && route.type != 'http') {
+    console.log('not http/https request, call other functions');
+    return requestNotHttp(option, route);
   }
 
   // 授权（未开发）
@@ -83,7 +90,6 @@ function redirectOption(option) {
   if (additionPath) option.path += '/' + additionPath;
 
   console.log('redirect to -> ' + option.hostname + option.path);
-
   return option;
 }
 
@@ -92,25 +98,21 @@ function mergeCORSHeader(reqHeader, originHeader, method) {
   let targetObj = originHeader || {};
 
   if (reqHeader['origin']) {
-
+    // 域名未添加到列表
     if (!config.cors.hasOwnProperty(reqHeader['origin'])) {
-      console.warn('cors access host denied: ' + reqHeader['origin']);
+      if (config.devEnv) console.warn('cors access host denied: ' + reqHeader['origin']);
       return targetObj;
     }
-
     let cors_data = config.cors[reqHeader['origin']];
+    // 不允许未指定method
     if (cors_data.hasOwnProperty('method') && cors_data.method.indexOf(method) < 0) {
-      console.warn('cors access method denied: ' + method + ' from ' + reqHeader['origin']);
+      if (config.devEnv) console.warn('cors access method denied: ' + method + ' from ' + reqHeader['origin']);
       return targetObj;
     }
 
-    console.log('cors access verified: ' + reqHeader['origin']);
+    if (config.devEnv) console.log('cors access verified: ' + reqHeader['origin']);
 
-    delete targetObj["Access-Control-Allow-Credentials"];
-    delete targetObj["Access-Control-Allow-Origin"];
-    delete targetObj["Access-Control-Allow-Methods"];
-    delete targetObj["Access-Control-Allow-Headers"];
-
+    // 修改cors头
     targetObj["access-control-allow-credentials"] = "true";
     targetObj["access-control-allow-origin"] = reqHeader['origin'];
     targetObj["access-control-allow-methods"] = "GET, POST, PUT";
@@ -124,3 +126,9 @@ function mergeCORSHeader(reqHeader, originHeader, method) {
 
   return targetObj;
 }
+
+function requestNotHttp(option, route) {
+  if (config.devEnv) console.log(route);
+  return option;
+}
+

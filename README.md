@@ -21,9 +21,11 @@ rule: 规则文件，不需要修改
 
 代理中可以限定method，缺省则接受所有method
 
-重定向路径可以设置prod和test，分别对应NODE_ENV=production和development
+重定向路径可以设置production和development，具体调用路径由NODE_ENV决定
 
 auth授权暂无功能，以后完善
+
+设置type后，可以拦截请求并使用type所对应的协议
 
 ### cors
 进行跨域访问时，如果主机在cors列表中，则替换cors头使访问合法

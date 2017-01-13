@@ -1,0 +1,37 @@
+{
+  "/": {
+    "redirect": {
+      "production": "passport.17shihui.com",
+      "development": "127.0.0.1"
+    }
+  },
+  "/passport": {
+    "redirect": {
+      "production": "passport.17shihui.com",
+      "development": "test.passport.17shihui.com"
+    },
+    "auth": true
+  },
+  "api/": {
+    "type": "rpc",
+    "redirect": {
+      "production": "api.17shihui.com",
+      "development": "test.api.17shihui.com"
+    },
+    "auth": true
+  },
+  "passport/api": {
+    "method": [
+      "GET",
+      "POST"
+    ],
+    "redirect": {
+      "production": "passport.api.17shihui.com",
+      "development": "test.passport.api.17shihui.com"
+    },
+    "auth": true
+  },
+  "no-redirect": {
+    "auth": true
+  }
+}
